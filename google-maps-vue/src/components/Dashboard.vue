@@ -1,8 +1,8 @@
 <template>
   <!--<div id="map"></div>-->
   <GmapMap
-  :center="{lat:10, lng:10}"
-  :zoom="7"
+  :center="{lat:-25, lng:130}"
+  :zoom="10"
   map-type-id="terrain"
   style="width: 500px; height: 300px"
 >
@@ -22,7 +22,16 @@ export default {
   name: 'Dashboard',
   props: {
     msg: String
-  }
+  },
+  data: function () {
+    return {
+      markers: [{
+        position: {lat: -25.363, lng: 131.044}
+      }, {
+        position: {lat: -24, lng: 132}
+      }]
+    }
+  },
 }
 </script>
 
