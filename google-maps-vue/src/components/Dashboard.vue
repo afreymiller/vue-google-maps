@@ -87,6 +87,8 @@ export default {
   },
   methods: {
           toggleInfoWindow: function(marker, idx) {
+            // Custom marker:
+            // https://developers.google.com/maps/documentation/javascript/examples/marker-symbol-custom
             this.infoWindowPos = marker.position;
             this.infoOptions.content = marker.infoText;
 
