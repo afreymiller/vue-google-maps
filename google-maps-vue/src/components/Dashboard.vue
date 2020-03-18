@@ -13,7 +13,7 @@
     v-for="(m, index) in markers"
     :position="m.position"
     :clickable="true"
-    :icon="customIcon"
+    :icon="getCustomIcon(m.price)"
     :draggable="true"
     :visible="m.visible == selected && m.price < maximum"
     @click="toggleInfoWindow(m,index)"
@@ -46,14 +46,6 @@ export default {
         { text: 'Two', value: 'B' },
         { text: 'Three', value: 'C' }
       ],
-      customIcon: {
-        path: 'M 10, 20 a 10,10 0 1,1 20,0 a 10,10 0 1,1 -20,0',
-        fillColor: 'green',
-        fillOpacity: 0.8,
-        scale: 1,
-        strokeColor: 'black',
-        strokeWeight: 2
-      },
       infoWindowPos: null,
       infoWinOpen: false,
       currentMidx: null,
@@ -68,56 +60,49 @@ export default {
       minimum: 0,
       maximum: 1500,
       markers: [
-        {position: {lng: -87.6649857, lat: 41.8690738}, icon: {
-        path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
-        fillColor: 'yellow',
-        fillOpacity: 0.8,
-        scale: 1,
-        strokeColor: 'gold',
-        strokeWeight: 14
-      }, infoText: 'Marker 1', visible: 'B', price: 100},
-        {position: {lng: -87.6648952, lat: 41.8690754}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6648825, lat: 41.8694949}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.664821, lat: 41.873856}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6648002, lat: 41.8690782}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6647942, lat: 41.8694922}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6647903, lat: 41.8718445}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6647069, lat: 41.8694913}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6647032, lat: 41.8690806}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6646183, lat: 41.8690946}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6645272, lat: 41.8690723}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.664521, lat: 41.8723198}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6645206, lat: 41.8719059}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6645124, lat: 41.8722341}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.66448, lat: 41.872642}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6644757, lat: 41.872697}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6644596, lat: 41.87249}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6644326, lat: 41.8690798}, icon: this.goldStar, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6644178, lat: 41.8719134}, icon: this.goldStar, infoText: 'Marker1', visible: 'B', price: 100},
-        {position: {lng: -87.6643425, lat: 41.8690971}, icon: this.goldStar, infoText: 'Marker1', visible: 'B', price: 100},
-        {position: {lng: -87.6643289, lat: 41.8719093}, icon: this.goldStar, infoText: 'Marker1', visible: 'B', price: 100},
-        {position: {lng: -87.6642436, lat: 41.8695487}, icon: this.goldStar, infoText: 'Marker1', visible: 'B', price: 100},
-        {position: {lng: -87.6642419, lat: 41.8690612}, icon: this.goldStar, infoText: 'Marker1', visible: 'B', price: 100},
-        {position: {lng: -87.663973, lat: 41.8726416}, icon: this.goldStar, infoText: 'Marker1', visible: 'B', price: 100},
-        {position: {lng: -87.6639715, lat: 41.8722495}, icon: this.goldStar, infoText: 'Marker1', visible: 'B', price: 100},
-        {position: {lng: -87.6639605, lat: 41.871905}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6639305, lat: 41.873117}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.663926, lat: 41.8694948}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6639011, lat: 41.8691054}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.663886, lat: 41.8697116}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638559, lat: 41.8709124}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638536, lat: 41.8707727}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638527, lat: 41.8708416}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638519, lat: 41.8709847}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638506, lat: 41.8710445}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638446, lat: 41.8699563}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638443, lat: 41.8698501}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638418, lat: 41.8688549}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638406, lat: 41.8707093}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638397, lat: 41.8711199}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.663834, lat: 41.8700229}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638257, lat: 41.8706341}, icon: this.goldStar, infoText: 'Marker1', visible: 'C', price: 100},
-        {position: {lng: -87.6638096, lat: 41.8703632}, icon: this.goldStar, infoText: 'Markert1', visible: 'C', price: 50} 
+        {position: {lng: -87.6649857, lat: 41.8690738}, infoText: 'Marker 1', visible: 'B', price: 60},
+        {position: {lng: -87.6648952, lat: 41.8690754}, infoText: 'Marker1', visible: 'A', price: 60},
+        {position: {lng: -87.6648825, lat: 41.8694949}, infoText: 'Marker1', visible: 'A', price: 60},
+        {position: {lng: -87.664821, lat: 41.873856}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6648002, lat: 41.8690782}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6647942, lat: 41.8694922}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6647903, lat: 41.8718445}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6647069, lat: 41.8694913}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6647032, lat: 41.8690806}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6646183, lat: 41.8690946}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6645272, lat: 41.8690723}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.664521, lat: 41.8723198}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6645206, lat: 41.8719059}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6645124, lat: 41.8722341}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.66448, lat: 41.872642}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6644757, lat: 41.872697}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6644596, lat: 41.87249}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6644326, lat: 41.8690798}, infoText: 'Marker1', visible: 'A', price: 100},
+        {position: {lng: -87.6644178, lat: 41.8719134}, infoText: 'Marker1', visible: 'B', price: 100},
+        {position: {lng: -87.6643425, lat: 41.8690971}, infoText: 'Marker1', visible: 'B', price: 100},
+        {position: {lng: -87.6643289, lat: 41.8719093}, infoText: 'Marker1', visible: 'B', price: 100},
+        {position: {lng: -87.6642436, lat: 41.8695487}, infoText: 'Marker1', visible: 'B', price: 100},
+        {position: {lng: -87.6642419, lat: 41.8690612}, infoText: 'Marker1', visible: 'B', price: 100},
+        {position: {lng: -87.663973, lat: 41.8726416}, infoText: 'Marker1', visible: 'B', price: 100},
+        {position: {lng: -87.6639715, lat: 41.8722495}, infoText: 'Marker1', visible: 'B', price: 100},
+        {position: {lng: -87.6639605, lat: 41.871905}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6639305, lat: 41.873117}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.663926, lat: 41.8694948}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6639011, lat: 41.8691054}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.663886, lat: 41.8697116}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638559, lat: 41.8709124}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638536, lat: 41.8707727}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638527, lat: 41.8708416}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638519, lat: 41.8709847}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638506, lat: 41.8710445}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638446, lat: 41.8699563}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638443, lat: 41.8698501}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638418, lat: 41.8688549}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638406, lat: 41.8707093}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638397, lat: 41.8711199}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.663834, lat: 41.8700229}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638257, lat: 41.8706341}, infoText: 'Marker1', visible: 'C', price: 100},
+        {position: {lng: -87.6638096, lat: 41.8703632}, infoText: 'Markert1', visible: 'C', price: 50} 
       ]
     }
   },
@@ -138,8 +123,18 @@ export default {
               this.currentMidx = idx;
 
             }
+          }, 
+          getCustomIcon: function(price) {
+            let fillColor = price > 75 ? 'green' : 'red';
+            return {
+              path: 'M 10, 20 a 10,10 0 1,1 20,0 a 10,10 0 1,1 -20,0',
+              fillColor: fillColor,
+              fillOpacity: 0.8,
+              scale: 1,
+              strokeColor: 'black',
+              strokeWeight: 2
+            }
           }
-
         }
 }
 </script>
