@@ -1,5 +1,5 @@
 <template>
-  <!--<div id="map"></div>-->
+<div>
   <GmapMap
   :center="{lng: -87.665, lat: 41.867}"
   :zoom="16"
@@ -17,6 +17,13 @@
     @click="toggleInfoWindow(m,index)"
   />
 </GmapMap>
+<select v-model="selected">
+  <option v-for="option in options" v-bind:key="option.text" v-bind:value="option.value">
+    {{ option.text }}
+  </option>
+</select>
+<span>Selected: {{ selected }}</span>
+</div>
 </template>
 
 <script>
@@ -27,6 +34,12 @@ export default {
   },
   data: function () {
     return {
+      selected: 'A',
+      options: [
+        { text: 'One', value: 'A' },
+        { text: 'Two', value: 'B' },
+        { text: 'Three', value: 'C' }
+      ],
       infoWindowPos: null,
       infoWinOpen: false,
       currentMidx: null,
