@@ -8,6 +8,8 @@ Vue.config.productionTip = false
 
 //https://github.com/xkjyeah/vue-google-maps
 
+//https://medium.com/parsec-digital/setting-up-and-getting-rest-service-data-with-firebase-and-axios-8b941276f075
+
 Vue.use(VueGoogleMaps, {
   load: {
     key: '<API_KEY>',
