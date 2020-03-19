@@ -15,20 +15,27 @@
     :clickable="true"
     :icon="getCustomIcon(m.price)"
     :draggable="true"
-    :visible="m.visible == selected && m.price < maximum"
+    :visible="isVisible(m)"
     @click="toggleInfoWindow(m,index)"
   />
 </GmapMap>
-<select v-model="selected">
-  <option v-for="option in options" v-bind:key="option.text" v-bind:value="option.value">
-    {{ option.text }}
-  </option>
-</select>
-<span>Selected: {{ selected }}</span>
+<!-- all of these should be componentized -->
 <input v-model="minimum" placeholder="0">
 <p>Price min: {{ minimum }}</p>
 <input v-model="maximum" placeholder="1500">
 <p>Price max: {{ maximum }}</p>
+<span>ZIP Code: </span>
+<select v-model="zipCodeSelected">
+  <option v-for="option in zipOptions" v-bind:key="option.text" v-bind:value="option.value">
+    {{ option.text }}
+  </option>
+</select>
+<span>OVACLS: </span>
+<select v-model="ovaClsSelected">
+  <option v-for="option in ovaClsOptions" v-bind:key="option.text" v-bind:value="option.value">
+    {{ option.text }}
+  </option>
+</select>
 </div>
 </template>
 
@@ -43,11 +50,32 @@ export default {
   // https://campushippo.com/lessons/how-to-convert-rgb-colors-to-hexadecimal-with-javascript-78219fdb
   data: function () {
     return {
-      selected: 'A',
-      options: [
-        { text: 'One', value: 'A' },
-        { text: 'Two', value: 'B' },
-        { text: 'Three', value: 'C' }
+      zipCodeSelected: 60607,
+      zipOptions: [
+        {text: 60607, value: 60607},
+        {text: 60608, value: 60608},
+        {text: 60612, value: 60612},
+        {text: 60614, value: 60614},
+        {text: 60616, value: 60616},
+        {text: 60618, value: 60618},
+        {text: 60622, value: 60622}
+      ],
+      ovaClsSelected: 211,
+      ovaClsOptions: [
+        {text: 211, value: 211},
+        {text: 212, value: 212},
+        {text: 315, value: 315},
+        {text: 314, value: 314},
+        {text: 225, value: 225},
+        {text: 297, value: 297},
+        {text: 313, value: 313},
+        {text: 318, value: 318},
+        {text: 391, value: 391},
+        {text: 396, value: 396},
+        {text: 913, value: 913},
+        {text: 915, value: 915},
+        {text: 991, value: 991},
+        {text: 996, value: 996}
       ],
       infoWindowPos: null,
       infoWinOpen: false,
@@ -62,49 +90,10 @@ export default {
       minimum: 0,
       maximum: 1500,
       markers: [
-        {position: {lng: -87.6649857, lat: 41.8690738}, infoText: 'Marker 1', visible: 'B', price: 20},
-        {position: {lng: -87.6648952, lat: 41.8690754}, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6648825, lat: 41.8694949}, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.664821, lat: 41.873856}, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6648002, lat: 41.8690782}, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6647942, lat: 41.8694922}, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6647903, lat: 41.8718445}, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6647069, lat: 41.8694913}, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6647032, lat: 41.8690806}, infoText: 'Marker1', visible: 'A', price: 100},
-        {position: {lng: -87.6646183, lat: 41.8690946}, infoText: 'Marker1', visible: 'A', price: 200},
-        {position: {lng: -87.6645272, lat: 41.8690723}, infoText: 'Marker1', visible: 'A', price: 200},
-        {position: {lng: -87.664521, lat: 41.8723198}, infoText: 'Marker1', visible: 'A', price: 200},
-        {position: {lng: -87.6645206, lat: 41.8719059}, infoText: 'Marker1', visible: 'A', price: 200},
-        {position: {lng: -87.6645124, lat: 41.8722341}, infoText: 'Marker1', visible: 'A', price: 200},
-        {position: {lng: -87.66448, lat: 41.872642}, infoText: 'Marker1', visible: 'A', price: 200},
-        {position: {lng: -87.6644757, lat: 41.872697}, infoText: 'Marker1', visible: 'A', price: 200},
-        {position: {lng: -87.6644596, lat: 41.87249}, infoText: 'Marker1', visible: 'A', price: 200},
-        {position: {lng: -87.6644326, lat: 41.8690798}, infoText: 'Marker1', visible: 'A', price: 200},
-        {position: {lng: -87.6644178, lat: 41.8719134}, infoText: 'Marker1', visible: 'B', price: 200},
-        {position: {lng: -87.6643425, lat: 41.8690971}, infoText: 'Marker1', visible: 'B', price: 200},
-        {position: {lng: -87.6643289, lat: 41.8719093}, infoText: 'Marker1', visible: 'B', price: 200},
-        {position: {lng: -87.6642436, lat: 41.8695487}, infoText: 'Marker1', visible: 'B', price: 200},
-        {position: {lng: -87.6642419, lat: 41.8690612}, infoText: 'Marker1', visible: 'B', price: 200},
-        {position: {lng: -87.663973, lat: 41.8726416}, infoText: 'Marker1', visible: 'B', price: 200},
-        {position: {lng: -87.6639715, lat: 41.8722495}, infoText: 'Marker1', visible: 'B', price: 200},
-        {position: {lng: -87.6639605, lat: 41.871905}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6639305, lat: 41.873117}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.663926, lat: 41.8694948}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6639011, lat: 41.8691054}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.663886, lat: 41.8697116}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638559, lat: 41.8709124}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638536, lat: 41.8707727}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638527, lat: 41.8708416}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638519, lat: 41.8709847}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638506, lat: 41.8710445}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638446, lat: 41.8699563}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638443, lat: 41.8698501}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638418, lat: 41.8688549}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638406, lat: 41.8707093}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638397, lat: 41.8711199}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.663834, lat: 41.8700229}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638257, lat: 41.8706341}, infoText: 'Marker1', visible: 'C', price: 200},
-        {position: {lng: -87.6638096, lat: 41.8703632}, infoText: 'Markert1', visible: 'C', price: 200} 
+        {position: {lng: -87.6649857, lat: 41.8690738}, infoText: 'Marker 1', ZIP: 60608, price: 20, ovaCls: 211},
+        {position: {lng: -87.6648952, lat: 41.8690754}, infoText: 'Marker1', ZIP: 60607, price: 100, ovaCls: 212},
+        {position: {lng: -87.6648825, lat: 41.8694949}, infoText: 'Marker1', ZIP: 60612, price: 100, ovaCls: 315},
+        {position: {lng: -87.664821, lat: 41.873856}, infoText: 'Marker1', ZIP: 60614, price: 100, ovaCls: 314}
       ]
     }
   },
@@ -165,6 +154,12 @@ export default {
             let hex = "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
             console.log(hex);
             return hex;
+          },
+          isVisible: function(marker) {
+            let matchesPrice = marker.price <= this.maximum && marker.price >= this.minimum;
+            let matchesZip = marker.ZIP == this.zipCodeSelected; 
+            let matchesOvaCls = marker.ovaCls == this.ovaClsSelected;
+            return matchesPrice && matchesZip && matchesOvaCls;
           }
         }
 }
