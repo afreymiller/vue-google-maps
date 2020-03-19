@@ -13,21 +13,33 @@
     v-for="(m, index) in markers"
     :position="m.position"
     :clickable="true"
-    :icon="getCustomIcon(m.price)"
+    :icon="getCustomIcon(m.estimatedMarketValue)"
     :draggable="true"
     :visible="isVisible(m)"
     @click="toggleInfoWindow(m,index)"
   />
 </GmapMap>
 <!-- all of these should be componentized -->
-<input v-model="minimum" placeholder="0">
-<p>Price min: {{ minimum }}</p>
-<input v-model="maximum" placeholder="1500">
-<p>Price max: {{ maximum }}</p>
+<input v-model="estimatedMarketMinimum" placeholder="0">
+<p>Price min: {{ estimatedMarketMinimum }}</p>
+<input v-model="estimatedMarketMaximum" placeholder="1500">
+<p>Price max: {{ estimatedMarketMaximum }}</p>
 <input v-model="currentLandMin" placeholder="0">
 <p>Land min: {{ currentLandMin }}</p>
 <input v-model="currentLandMax" placeholder="2000">
 <p>Land max: {{ currentLandMax }}</p>
+<input v-model="currentBuildingMin" placeholder="2000">
+<p>Current building min: {{ currentBuildingMin }}</p>
+<input v-model="currentBuildingMax" placeholder="2000">
+<p>Current building max: {{ currentBuildingMax }}</p>
+<input v-model="priorLandMin" placeholder="0">
+<p>Prior land min: {{ priorLandMin }}</p>
+<input v-model="priorLandMax" placeholder="2000">
+<p>Prior land max: {{ priorLandMax }}</p>
+<input v-model="priorBuildingMin" placeholder="0">
+<p>Prior building min: {{ priorBuildingMin }}</p>
+<input v-model="priorBuildingMax" placeholder="2000">
+<p>Prior building max: {{ priorBuildingMax }}</p>
 <span>ZIP Code: </span>
 <select v-model="zipCodeSelected">
   <option v-for="option in zipOptions" v-bind:key="option.text" v-bind:value="option.value">
@@ -42,6 +54,12 @@
 <span>OVACLS: </span>
 <select v-model="ovaClsSelected">
   <option v-for="option in ovaClsOptions" v-bind:key="option.text" v-bind:value="option.value">
+    {{ option.text }}
+  </option>
+</select>
+<span>Prior year: </span>
+<select v-model="priorYearSelected">
+  <option v-for="option in priorYearOptions" v-bind:key="option.text" v-bind:value="option.value">
     {{ option.text }}
   </option>
 </select>
@@ -86,6 +104,10 @@ export default {
         {text: 991, value: 991},
         {text: 996, value: 996}
       ],
+      priorYearSelected: 2013,
+      priorYearOptions: [
+        {text: 2013, value: 2013}
+      ],
       classDescriptionSelected: '2 or 3 story bldng, 7 or more units, sngle devel., 1 or more contig. parcels, in common ownership',
       classDescriptionOptions: [
         {text: '2 or 3 story bldng, 7 or more units, sngle devel., 1 or more contig. parcels, in common ownership', value: '2 or 3 story bldng, 7 or more units, sngle devel., 1 or more contig. parcels, in common ownership'},
@@ -110,15 +132,21 @@ export default {
           height: -35
         }
       },
-      minimum: 0,
-      maximum: 1500,
+      estimatedMarketMinimum: 0,
+      estimatedMarketMaximum: 1500,
       currentLandMin: 0,
       currentLandMax: 2000,
+      currentBuildingMin: 0,
+      currentBuildingMax: 2000,
+      priorLandMin: 0,
+      priorLandMax: 2000,
+      priorBuildingMin: 0,
+      priorBuildingMax: 2000,
       markers: [
-        {position: {lng: -87.6649857, lat: 41.8690738}, infoText: 'Marker 1', ZIP: 60608, land: 200, classDescription: 'Two to Six Apartments, Over 62 Years', price: 20, ovaCls: 211},
-        {position: {lng: -87.6648952, lat: 41.8690754}, infoText: 'Marker1', ZIP: 60607, land: 500, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 212},
-        {position: {lng: -87.6648825, lat: 41.8694949}, infoText: 'Marker1', ZIP: 60612, land: 600, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 315},
-        {position: {lng: -87.664821, lat: 41.873856}, infoText: 'Marker1', ZIP: 60614, land: 150, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 314}
+        {position: {lng: -87.6649857, lat: 41.8690738}, infoText: 'Marker 1', ZIP: 60608, currLand: 200, currBuilding: 200, priorLand: 200, priorBuilding: 200, priorYear: 2013, classDescription: 'Two to Six Apartments, Over 62 Years', estimatedMarketValue: 20, ovaCls: 211},
+        {position: {lng: -87.6648952, lat: 41.8690754}, infoText: 'Marker1', ZIP: 60607, currLand: 500, currBuilding: 500, priorLand: 200, priorBuilding: 200, priorYear: 2013, classDescription: 'Two to Six Apartments, Over 62 Years', estimatedMarketValue: 100, ovaCls: 212},
+        {position: {lng: -87.6648825, lat: 41.8694949}, infoText: 'Marker1', ZIP: 60612, currLand: 600, currBuilding: 600, priorLand: 200, priorBuilding: 200, priorYear: 2013, classDescription: 'Two to Six Apartments, Over 62 Years', estimatedMarketValue: 100, ovaCls: 315},
+        {position: {lng: -87.664821, lat: 41.873856}, infoText: 'Marker1', ZIP: 60614, currLand: 150, currBuilding: 150, priorLand: 200, priorBuilding: 200, priorYear: 2013, classDescription: 'Two to Six Apartments, Over 62 Years', estimatedMarketValue: 100, ovaCls: 314}
       ]                                                       
     }
   },
@@ -181,12 +209,21 @@ export default {
             return hex;
           },
           isVisible: function(marker) {
-            let matchesPrice = marker.price <= this.maximum && marker.price >= this.minimum;
+            let matchesPrice = marker.estimatedMarketValue <= this.estimatedMarketMaximum && marker.estimatedMarketValue >= this.estimatedMarketMinimum;
             let matchesZip = marker.ZIP == this.zipCodeSelected; 
             let matchesOvaCls = marker.ovaCls == this.ovaClsSelected;
             let matchesClassDescription = marker.classDescription == this.classDescriptionSelected;
-            let matchesLandValue = marker.land <= this.currentLandMax && marker.land >= this.currentLandMin;
-            return matchesPrice && matchesZip && matchesOvaCls && matchesClassDescription && matchesLandValue;
+            let matchesCurrLandValue = marker.currLand <= this.currentLandMax && marker.currLand >= this.currentLandMin;
+            let matchesCurrBuildingValue = marker.currBuilding <= this.currentBuildingMax && marker.currBuilding >= this.currentBuildingMin;
+            let matchesPrevLandValue = marker.priorLand <= this.priorLandMax && marker.priorLand >= this.priorLandMin;
+            let matchesPrevBuildingValue = marker.priorBuilding <= this.priorBuildingMax && marker.priorBuilding >= this.priorBuildingMin;
+            let matchesPriorYear = marker.priorYear == this.priorYearSelected;
+
+            return matchesPrice && matchesZip 
+            && matchesOvaCls && matchesClassDescription 
+            && matchesCurrLandValue && matchesCurrBuildingValue
+            && matchesPrevLandValue && matchesPrevBuildingValue
+            && matchesPriorYear;
           }
         }
 }
