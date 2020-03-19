@@ -24,6 +24,10 @@
 <p>Price min: {{ minimum }}</p>
 <input v-model="maximum" placeholder="1500">
 <p>Price max: {{ maximum }}</p>
+<input v-model="currentLandMin" placeholder="0">
+<p>Land min: {{ currentLandMin }}</p>
+<input v-model="currentLandMax" placeholder="2000">
+<p>Land max: {{ currentLandMax }}</p>
 <span>ZIP Code: </span>
 <select v-model="zipCodeSelected">
   <option v-for="option in zipOptions" v-bind:key="option.text" v-bind:value="option.value">
@@ -108,11 +112,13 @@ export default {
       },
       minimum: 0,
       maximum: 1500,
+      currentLandMin: 0,
+      currentLandMax: 2000,
       markers: [
-        {position: {lng: -87.6649857, lat: 41.8690738}, infoText: 'Marker 1', ZIP: 60608, classDescription: 'Two to Six Apartments, Over 62 Years', price: 20, ovaCls: 211},
-        {position: {lng: -87.6648952, lat: 41.8690754}, infoText: 'Marker1', ZIP: 60607, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 212},
-        {position: {lng: -87.6648825, lat: 41.8694949}, infoText: 'Marker1', ZIP: 60612, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 315},
-        {position: {lng: -87.664821, lat: 41.873856}, infoText: 'Marker1', ZIP: 60614, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 314}
+        {position: {lng: -87.6649857, lat: 41.8690738}, infoText: 'Marker 1', ZIP: 60608, land: 200, classDescription: 'Two to Six Apartments, Over 62 Years', price: 20, ovaCls: 211},
+        {position: {lng: -87.6648952, lat: 41.8690754}, infoText: 'Marker1', ZIP: 60607, land: 500, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 212},
+        {position: {lng: -87.6648825, lat: 41.8694949}, infoText: 'Marker1', ZIP: 60612, land: 600, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 315},
+        {position: {lng: -87.664821, lat: 41.873856}, infoText: 'Marker1', ZIP: 60614, land: 150, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 314}
       ]                                                       
     }
   },
@@ -178,8 +184,9 @@ export default {
             let matchesPrice = marker.price <= this.maximum && marker.price >= this.minimum;
             let matchesZip = marker.ZIP == this.zipCodeSelected; 
             let matchesOvaCls = marker.ovaCls == this.ovaClsSelected;
-            let matchesClassDescription = marker.classDescription == this.classDescriptionSelected
-            return matchesPrice && matchesZip && matchesOvaCls && matchesClassDescription;
+            let matchesClassDescription = marker.classDescription == this.classDescriptionSelected;
+            let matchesLandValue = marker.land <= this.currentLandMax && marker.land >= this.currentLandMin;
+            return matchesPrice && matchesZip && matchesOvaCls && matchesClassDescription && matchesLandValue;
           }
         }
 }
