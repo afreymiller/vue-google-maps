@@ -146,8 +146,8 @@ export default {
             const gGreen = 255;
             //const bGreen = 0;
 
-            const rNew = Math.round((rRed - rGreen) * fraction) + rGreen;
-            const gNew = Math.round((gRed - gGreen) * fraction) + gGreen;
+            const rNew = Math.round((rGreen - rRed) * fraction) + rRed;
+            const gNew = Math.round((gGreen - gRed) * fraction) + gRed;
             const bNew = 0;
 
             console.log(rNew);
