@@ -30,6 +30,11 @@
     {{ option.text }}
   </option>
 </select>
+<select v-model="classDescriptionSelected">
+  <option v-for="option in classDescriptionOptions" v-bind:key="option.text" v-bind:value="option.value">
+    {{ option.text }}
+  </option>
+</select>
 <span>OVACLS: </span>
 <select v-model="ovaClsSelected">
   <option v-for="option in ovaClsOptions" v-bind:key="option.text" v-bind:value="option.value">
@@ -77,6 +82,20 @@ export default {
         {text: 991, value: 991},
         {text: 996, value: 996}
       ],
+      classDescriptionSelected: '2 or 3 story bldng, 7 or more units, sngle devel., 1 or more contig. parcels, in common ownership',
+      classDescriptionOptions: [
+        {text: '2 or 3 story bldng, 7 or more units, sngle devel., 1 or more contig. parcels, in common ownership', value: '2 or 3 story bldng, 7 or more units, sngle devel., 1 or more contig. parcels, in common ownership'},
+        {text: '2 or 3 story non-frprf corridor apts, or california type apts, interior entrance', value: '2 or 3 story non-frprf corridor apts, or california type apts, interior entrance'},
+        {text: 'Apartment buildings over three stories', value: 'Apartment buildings over three stories'},
+        {text: 'Mixed commercial/residential building, 6 units or less, sq ft less than 20,000 ', value: 'Mixed commercial/residential building, 6 units or less, sq ft less than 20,000'},
+        {text: 'Mixed use commercial/residential with apts. above seven units or more or building sq. ft. over 20,000', value: 'Mixed use commercial/residential with apts. above seven units or more or building sq. ft. over 20,000'},
+        {text: 'Qualified single room occupancy improvements (must have cdu of sr)', value: 'Qualified single room occupancy improvements (must have cdu of sr)'},
+        {text: 'Rental mdrn row houses, 7 or more unts in a sing. dvlpment or 1 or more contig. prcls in comm. ownrshp', value: 'Rental mdrn row houses, 7 or more unts in a sing. dvlpment or 1 or more contig. prcls in comm. ownrshp'},
+        {text: 'Special residential improvements', value: 'Special residential improvements'},
+        {text: 'Two or three story non-fireproof corridor apartments,or california type apartments, interior entrance', value: 'Two or three story non-fireproof corridor apartments,or california type apartments, interior entrance'},
+        {text: 'Two or three story non-frprf. crt. and corridor apts or california type apts, no corridors, ex. entrance', value: 'Two or three story non-frprf. crt. and corridor apts or california type apts, no corridors, ex. entrance'},
+        {text: 'Two to Six Apartments, Over 62 Years', value: 'Two to Six Apartments, Over 62 Years'}
+      ],
       infoWindowPos: null,
       infoWinOpen: false,
       currentMidx: null,
@@ -90,11 +109,11 @@ export default {
       minimum: 0,
       maximum: 1500,
       markers: [
-        {position: {lng: -87.6649857, lat: 41.8690738}, infoText: 'Marker 1', ZIP: 60608, price: 20, ovaCls: 211},
-        {position: {lng: -87.6648952, lat: 41.8690754}, infoText: 'Marker1', ZIP: 60607, price: 100, ovaCls: 212},
-        {position: {lng: -87.6648825, lat: 41.8694949}, infoText: 'Marker1', ZIP: 60612, price: 100, ovaCls: 315},
-        {position: {lng: -87.664821, lat: 41.873856}, infoText: 'Marker1', ZIP: 60614, price: 100, ovaCls: 314}
-      ]
+        {position: {lng: -87.6649857, lat: 41.8690738}, infoText: 'Marker 1', ZIP: 60608, classDescription: 'Two to Six Apartments, Over 62 Years', price: 20, ovaCls: 211},
+        {position: {lng: -87.6648952, lat: 41.8690754}, infoText: 'Marker1', ZIP: 60607, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 212},
+        {position: {lng: -87.6648825, lat: 41.8694949}, infoText: 'Marker1', ZIP: 60612, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 315},
+        {position: {lng: -87.664821, lat: 41.873856}, infoText: 'Marker1', ZIP: 60614, classDescription: 'Two to Six Apartments, Over 62 Years', price: 100, ovaCls: 314}
+      ]                                                       
     }
   },
   methods: {
@@ -159,7 +178,8 @@ export default {
             let matchesPrice = marker.price <= this.maximum && marker.price >= this.minimum;
             let matchesZip = marker.ZIP == this.zipCodeSelected; 
             let matchesOvaCls = marker.ovaCls == this.ovaClsSelected;
-            return matchesPrice && matchesZip && matchesOvaCls;
+            let matchesClassDescription = marker.classDescription == this.classDescriptionSelected
+            return matchesPrice && matchesZip && matchesOvaCls && matchesClassDescription;
           }
         }
 }
